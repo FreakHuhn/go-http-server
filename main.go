@@ -31,13 +31,13 @@ func main(){
 	mux := http.NewServeMux()
 	handler := http.StripPrefix("/app", http.FileServer(http.Dir(".")))
 	mux.Handle("/app/", apicfg.middlewareMetricsInc(handler))
-	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request){
+	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request){
 		w.Header().Set("Content-Type","text/plain; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	})
-	mux.HandleFunc("/metrics", apicfg.handlerMetrics)
-	mux.HandleFunc("/reset", apicfg.handlerReset)
+	mux.HandleFunc("GET /metrics", apicfg.handlerMetrics)
+	mux.HandleFunc("POST /reset", apicfg.handlerReset)
 	server := &http.Server{
 		Addr : ":8080",
 		Handler: mux,}
